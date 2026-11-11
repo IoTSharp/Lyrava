@@ -1,0 +1,19 @@
+Lyrava
+Copyright (C) 2026 Lyrava contributors
+
+Lyrava is an independent C# / .NET music-client project.
+
+Technical references:
+- Metrolist: https://github.com/MetrolistGroup/Metrolist
+  Assessment baseline: e6fea3b36c68841bad21daa6252e1d69ecd3afbe
+- InnerTubeX: https://github.com/MetrolistGroup/innertubex
+  Assessment baseline: v0.11.2
+
+The initial repository contains original planning and collaboration documents;
+it does not contain implementation code imported from these projects.
+Later reuse or translation must preserve original notices, record provenance,
+and comply with the relevant licenses. The root license does not replace
+notices required for separately attributed upstream material.
+
+YouTube and Google are trademarks of their respective owners. Lyrava is not
+affiliated with, endorsed by, or sponsored by them.

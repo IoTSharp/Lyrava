@@ -1,0 +1,33 @@
+# .NET and IDE outputs
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.user
+*.suo
+TestResults/
+artifacts/
+
+# Task scratch and local secrets
+work/
+.env
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.p8
+*.mobileprovision
+*.provisionprofile
+*.keystore
+*.jks
+
+# Distributable binaries belong in release assets
+*.ipa
+*.apk
+*.aab
+*.msix
+*.msixbundle
+
+# OS metadata
+.DS_Store
+Thumbs.db
