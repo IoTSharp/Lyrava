@@ -1,6 +1,6 @@
 # 验收门禁
 
-当前状态：M0 已有 portable 工程、合同测试、音乐源、Windows 播放切片和后置 iOS 媒体验证探针。共享工程检查、Windows managed 编译与真实源的局部探测分别留证；Windows 运行/安装包和完整 iOS 原生构建、签名、手机、车机门禁仍未通过。逐项结果见 [M0 记录](m0-readiness.md)。
+当前状态：Windows-only M0 已完成工程、合同测试、Windows 播放切片、容量边界和后置平台记录。共享工程检查、Windows managed 编译与真实源的局部探测分别留证；Windows 运行/安装包、真实源和完整 iOS 原生构建、签名、手机、车机门禁继续作为 M1/OPS 或后续平台门禁。逐项结果见 [M0 记录](m0-readiness.md)。
 
 ## 证据格式
 
@@ -49,6 +49,10 @@ dotnet build src/Lyrava.App/Lyrava.App.csproj -f net10.0-windows10.0.19041.0 -c 
 本次 Windows Debug build 为 exit `0`、0 warnings、0 errors。该结果只证明托管代码和目标框架可编译；当前 `WindowsPackageType=None`，MSIX、系统媒体控制、真实播放、窗口生命周期和日常使用仍是 NOT_RUN 或独立门禁。iOS managed build 的命令和设备步骤见 [iOS 验证](m0-ios-validation.md)。
 
 Windows 服务已把 `MediaPlayer.SystemMediaTransportControls` 的播放/暂停/停止、元数据、时间线和位置请求接入单一播放器；后续系统面板按键、进度拖动和窗口关闭观察仍必须作为 G2/G7 运行证据单独记录。2026-11-15 重新执行 App restore 与 Windows Release build 均 exit `0`、0 warnings、0 errors，这只更新平台构建层证据。
+
+Windows-only M0-06 的完成判定覆盖实现基线、构建入口、资源预算、依赖许可和已知限制；它不把真实源、系统面板、MSIX、安装升级或日常使用写成 PASS。上述证据进入 M1-05、M1-07 和 OPS 后再分别关闭。
+
+Windows-only 验证脚本为 `pwsh -NoProfile -File ./eng/verify-windows.ps1 -StepTimeoutSeconds 300 -TotalTimeoutSeconds 900`；本次 SDK、restore、Release build、format、8 秒启动和所属进程树清理均 PASS，脚本明确输出真实源、系统媒体面板、MSIX/安装升级和长时间使用为 `NOT_RUN`。
 
 文档检查包括相对链接、路线 ID/重复定义、状态、许可和变更一致性；使用 `git diff --check` 检查未暂存变更，暂存后再运行 `git diff --cached --check`。未跟踪的新文件也要检查 UTF-8、尾部空白和冲突标记，不能只依赖空的 staged diff。
 

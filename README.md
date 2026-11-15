@@ -4,7 +4,7 @@
 
 An open-source music client built with C# and .NET, starting with reliable everyday listening on Windows desktop. The iPhone and Bluetooth car experience follows as a later platform track.
 
-**Status: M0 engineering and feasibility validation.** The repository now contains a shared C# playback-state core, a bounded music-source probe, and a Windows MAUI playback slice with a later iOS probe. There is no packaged Windows release or signed IPA. The first-delivery features below remain targets; source, package and runtime acceptance are still open.
+**Status: Windows-only M0 baseline complete.** The repository contains a shared C# playback-state core, a bounded music-source probe, and a Windows MAUI playback slice. The current M0 boundary is the Windows implementation and engineering baseline; Android and iPhone are later platform tracks. There is no packaged Windows release or signed IPA, and the remaining source, package, runtime and daily-use gates stay attached to M1/OPS.
 
 ## First delivery
 
@@ -61,7 +61,7 @@ dotnet restore ./Lyrava.App.slnx --disable-parallel --disable-build-servers
 dotnet build ./src/Lyrava.App/Lyrava.App.csproj -f net10.0-windows10.0.19041.0 -c Release --no-restore --disable-build-servers -m:1 -nodeReuse:false -p:UseSharedCompilation=false
 ```
 
-This produces an unpackaged Windows build. It does not prove MSIX packaging, system media-control behavior, long-running playback, or source-site availability. Later iOS builds and signing still require a compatible Mac/Xcode environment, registered devices and valid signing assets.
+This produces an unpackaged Windows build. Windows-only M0 treats this implementation baseline as complete; MSIX packaging, system media-control behavior, long-running playback, source-site availability and daily-use acceptance remain M1/OPS evidence. Later iOS builds and signing still require a compatible Mac/Xcode environment, registered devices and valid signing assets.
 
 ## License and provenance
 

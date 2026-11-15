@@ -1,6 +1,6 @@
 # Lyrava 技术架构
 
-状态：M0 工程和验证探针已建立，Windows 首发垂直切片已进入实现；以下完整产品链路仍含计划能力。实际实现与门禁见 [M0 记录](m0-readiness.md)，方向决策见 [ADR 0001](adr/0001-platform-and-distribution.md)。
+状态：Windows-only M0 工程基线和验证探针已完成，Windows 首发垂直切片已进入后续 M1 产品化；以下完整产品链路仍含计划能力。实际实现与门禁见 [M0 记录](m0-readiness.md)，方向决策见 [ADR 0001](adr/0001-platform-and-distribution.md)。
 
 ## 产品链路
 
@@ -38,6 +38,7 @@ flowchart TD
 - iOS 后续使用 C# 绑定的 `AVPlayer` / `AVQueuePlayer`、`AVAudioSession`、`MPNowPlayingInfoCenter` 和 `MPRemoteCommandCenter`。
 - Android 在 M3 接入原生媒体引擎、MediaSession 与前台媒体服务，适配代码用 C#。
 - Mac Catalyst 在 M4 实现媒体会话、生命周期和窗口行为；Windows 首发切片在 M1 继续扩展为产品能力。
+- Android、iOS 和 Mac 的平台媒体层、签名、设备及车机验收不属于当前 Windows-only M0，按各自后续阶段独立实施。
 - 单一播放协调器负责用户命令、系统遥控、队列切换、中断、seek 与停止，防止页面重建产生重复播放器。
 - 暂停、停止和销毁有明确语义；用户明确暂停后网络恢复不能擅自重新播放。
 - 断开车机/耳机默认暂停；再次连接遵守用户设置与系统限制。强制退出后的蓝牙自动唤起不在承诺范围内。

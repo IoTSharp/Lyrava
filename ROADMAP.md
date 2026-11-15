@@ -18,8 +18,8 @@
 
 | 阶段 | 产品结果 | 前置依赖 | 当前状态 |
 | --- | --- | --- | --- |
-| M0 · 工程与可行性 | 固定架构，证明真实音乐源和 Windows 播放链路 | 名称与产品边界 | in_progress：Windows 工程切片已落地，真实可播放源、运行和安装包门禁未齐；iPhone 验收后置 |
-| M1 · v0.1 Windows 首发核心版 | Windows 上可日常使用，具备独立安装包 | M0-02、M0-05、M0-06 | planned |
+| M0 · 工程与可行性 | 固定架构，完成 Windows 首发实现基线和容量边界 | 名称与产品边界 | done（Windows-only）：Windows 工程切片、平台边界、构建入口和未支持范围已闭环；真实源、安装包、长时间运行和日常使用作为 M1/OPS 独立门禁；Android/iOS 后续实现 |
+| M1 · v0.1 Windows 首发核心版 | Windows 上可日常使用，具备独立安装包 | M0-02、M0-06 | planned |
 | M2 · v0.2 音乐库与离线 | 账号、完整音乐库、下载和同步歌词 | M1，源站账号能力 | planned |
 | M3 · v0.3 Android | Android 与 iPhone 共享核心，并独立通过媒体验收 | M1 核心稳定；功能对齐 M2 | planned |
 | M4 · v0.4 桌面端 | macOS 正常使用与安装，并补齐跨桌面能力 | M1/M2/M3 共享合同稳定 | planned |
@@ -40,10 +40,10 @@ M7 的授权依赖不能用功能开关或侧载绕过。未获支持的可选�
 | M0-02 | .NET 10 工程与最小 MAUI 客户端 | 固定实际 SDK；C# 页面；共享核心可编译；对应 CI 有真实退出结果 | M0-01 | done：SDK 10.0.404；portable `eng/verify.ps1` 本地 restore/build/format/test exit 0；iOS managed Compile/Release build exit 0；run `43676740983` 的 Windows job PASS、Ubuntu job FAIL，托管矩阵未全绿 |
 | M0-03 | iOS 构建与设备基线 | 记录 Mac/Xcode/SDK、手机/iOS/车机、账号、签名方式；Release IPA 脱离调试器安装运行 | M0-02；真实设备与签名资产 | blocked：Windows archive 以 `Code signing must be enabled...` 失败；缺 Mac/Xcode、登记设备和签名输入 |
 | M0-04 | iOS 媒体验证 | 已知可播音源在真机锁屏连续播放；蓝牙、锁屏信息、远程按键、来电和断开处理有记录 | M0-03 | blocked：iPhone、合法固定音源和目标车机尚未绑定；代码探针与步骤已建立 |
-| M0-05 | C# 音乐源验证 | 真实曲目完成搜索、解析、可播放格式选择、Range/seek、过期刷新、后台换曲；明确 token 与登录依赖 | M0-02 | in_progress：28/28 合同测试；本次两次代理旅程均未取得结果或媒体地址；媒体/Range/seek/过期/后台仍未通过 |
-| M0-06 | Windows 首版开工门禁与容量基线 | M0-05 通过；选定 Windows 支持版本；记录未支持内容、网络条件、超时/缓存预算与依赖许可；iOS M0-03/04 后续单独验收 | M0-05 | blocked：真实媒体和 Windows 运行/安装证据未齐；iOS M0-03/04 不再阻塞 Windows 首发 |
+| M0-05 | C# 音乐源验证 | 真实曲目完成搜索、解析、可播放格式选择、Range/seek、过期刷新、后台换曲；明确 token 与登录依赖 | M0-02 | in_progress：28/28 合同测试；真实源旅程仍未取得可播放地址；作为 M1-05/OPS 风险继续跟踪，不阻塞本次 Windows-only M0 闭环 |
+| M0-06 | Windows 首版开工门禁与容量基线 | 选定 Windows 支持版本；记录实现边界、网络/超时/缓存预算和依赖许可；Windows 构建入口和交接证据齐全；Android/iOS 后续单独验收 | M0-02 | done（Windows-only）：Windows TFM、MediaPlayer/SMTC 接线、Release build、启动/清理烟测、资源预算和未通过门禁已记录；真实音源、系统面板、MSIX、安装升级和日常使用仍按 M1/OPS 独立记账 |
 
-M0-05 设置 2～4 人周的首次验证窗口。窗口结束必须给出证据与继续/调整判断，不把时间到期当作技术问题已经解决。当前代码和受控 VisionOS profile 仍保持纯 C#、无服务器、无 JavaScript 执行；真实播放解析未成立，记录于 [M0 记录](docs/m0-readiness.md) 和 [音乐源实验](docs/m0-source-feasibility.md)。Windows 是当前首发验证平台，iOS 的 M0-03/M0-04 设备与签名工作后置。若纯 C# 音乐源、平台 token 或后台行为无法成立，记录阻塞并更新 ADR；未经维护者确认不得悄悄引入服务器或 Kotlin/JavaScript 依赖。
+M0-05 设置 2～4 人周的首次验证窗口。窗口结束必须给出证据与继续/调整判断，不把时间到期当作技术问题已经解决。当前代码和受控 VisionOS profile 仍保持纯 C#、无服务器、无 JavaScript 执行；真实播放解析未成立，记录于 [M0 记录](docs/m0-readiness.md) 和 [音乐源实验](docs/m0-source-feasibility.md)。维护者已明确当前 M0 以 Windows 实现闭环为完成边界，M0-05 的真实源风险进入 M1-05/OPS；Android 和 iOS 的平台构建、签名、设备及车机工作按后续阶段实施。若纯 C# 音乐源、平台 token 或后台行为无法成立，记录阻塞并更新 ADR；未经维护者确认不得悄悄引入服务器或 Kotlin/JavaScript 依赖。
 
 ## M1 · v0.1 Windows 首发核心版
 
@@ -140,4 +140,4 @@ OPS 项是计划要求，当前未创建定时自动化，也未部署任何维�
 
 估算以熟悉 .NET/iOS 的工程师全职投入为前提：媒体验证约 1～2 人周；音乐源先给 2～4 人周验证窗口；v0.1 在验证通过后整体约 2～3 人月；完善移动双平台约 4～6 人月；接近完整范围约 6～12 人月或更高。后几项为对应总范围的粗估，不应逐项累加；外部等待、源站突变、设备和服务授权不作固定日期保证。
 
-下一项是完成 Windows 运行回执、合法真实可播放曲目验证和 Windows 安装包边界，继续 `M0-05` 并解除 `M0-06`。M0-06 通过前不启动 M1。最先必须证明的产品链路是：真实音乐源 → Windows 原生播放 → 系统媒体控制/窗口生命周期 → Windows 安装包。iPhone 的 Mac/Xcode、签名、真机和车机输入后续单独收集。
+Windows-only M0 已闭环。下一项进入 M1-01 至 M1-07 的 Windows 产品实现；真实音乐源、系统媒体控制运行、网络恢复、MSIX/安装升级和日常使用继续作为对应 M1/OPS 门禁，不能从代码构建推导通过。Android 和 iOS 的平台实现、签名、真机与车机输入后续单独收集。

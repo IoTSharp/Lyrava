@@ -1,6 +1,6 @@
-# M0 · Windows 首发验证入口
+# M0-06 · Windows 首发验证入口
 
-记录日期：2026-11-15（Asia/Shanghai）。源码基线：`ee4da7fa` 加本次未提交工作树。Windows 是当前首发优先平台；iPhone 的签名、真机和车机验收保留为后续平台工作。本记录描述 Windows 垂直切片的工程入口，不把本地编译写成日常使用或发行通过。
+记录日期：2026-11-15（Asia/Shanghai）。源码基线：`8976d56`。维护者已确定当前 M0 以 Windows 实现、工程基线和容量边界为完成范围；Android/iOS 及其签名、真机和车机验收保留为后续平台工作。本记录描述 Windows 垂直切片的工程入口，不把本地编译写成日常使用或发行通过。
 
 ## 当前实现
 
@@ -10,6 +10,20 @@
 - 直接媒体输入只接受 HTTPS URI，地址只在内存中使用，不写入状态、日志或诊断。源旅程最多两个公开 video ID，第二项在第一项结束后才解析。
 - 当前 Windows 配置为 `WindowsPackageType=None`，用于先验证桌面代码和媒体路径。MSIX、签名、安装升级、自动启动和商店/分发均未实现。
 - Windows 系统媒体控制的按键、进度条和窗口关闭后的进程行为，连同网络切换恢复和长时间播放，都需要独立运行回执；本地 build 不替代这些证据。
+
+## Windows-only M0-06 收口
+
+当前实现和工程证据已经满足 Windows-only M0-06 的范围：Windows TFM、`MediaPlayer`/`SystemMediaTransportControls` 接线、取消/超时和释放路径、Release build、启动/清理烟测、资源预算和未支持范围均已记录。M0-06 可以标记为 `done（Windows-only）`。
+
+真实音源播放、系统媒体面板实际交互、网络恢复、MSIX/安装升级和日常使用继续记为 M1/OPS 的独立 `NOT_RUN` 或 `FAIL` 门禁。它们不会因为 M0-06 关闭而自动通过。
+
+可重复执行的 Windows-only 验证入口为：
+
+```powershell
+pwsh -NoProfile -File ./eng/verify-windows.ps1 -StepTimeoutSeconds 300 -TotalTimeoutSeconds 900
+```
+
+脚本固定 SDK `10.0.404` 和 Windows TFM，执行 App restore、Release build、App solution format、8 秒 unpackaged 启动与本任务进程树清理；每次输出都会把真实源、系统媒体面板、MSIX/安装升级和长时间日常使用列为独立 `NOT_RUN` 边界。
 
 ## 已执行的工程验证
 
@@ -69,7 +83,7 @@ Windows 首发判定：PASS/FAIL/NOT_RUN/blocked
 
 ## 下一步
 
-1. 在受支持 Windows 版本、合法固定音源和可控网络条件下启动 Release unpackaged 运行回执，分别验证直接媒体和源旅程。
-2. 观察 Windows 系统媒体控制按键/进度、窗口生命周期、网络恢复和长时间播放，并把每一项写入上面的模板。
-3. 依据 M0-05 的真实源结果决定 Windows 首发是否继续、调整或记录源站阻塞；不通过认证、年龄或区域限制。
-4. 通过 M0-06 后再实现 Windows 搜索、队列、收藏、缓存和 MSIX 安装升级。iPhone 版本继续作为后续平台，不提前宣称已实现。
+1. 进入 M1-01 至 M1-04，完成 Windows 搜索、队列、产品播放页、后台和系统媒体控制的产品化实现。
+2. 在 M1-05 中用合法固定音源和可控网络条件执行真实播放、seek、过期刷新、网络恢复和源失败分类；不通过认证、年龄或区域限制。
+3. 在 M1-07 中完成 Windows Release、MSIX 或受支持安装包、安装升级和日常观察；把每一项写入上面的模板。
+4. Android、iOS、Mac、签名、真机、车机和平台专属能力继续按后续路线单独实施和验收。
