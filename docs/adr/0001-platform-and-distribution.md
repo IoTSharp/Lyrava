@@ -30,6 +30,14 @@
 - 如 C# 音乐源验证失败，先给出可审阅的替代方案和影响，不悄悄降低语言、平台或后台播放要求。
 - iOS 小组件、CarPlay 和其他扩展分别证明 C# 可行性与平台资格。
 
+## M0 实施记录（2026-11-12）
+
+已建立 .NET 10 共享工程、原创 C# 音乐源和 iOS MAUI 媒体验证入口。Windows 托管编译及合同测试只确认其各自范围；没有生成并验收已签名原生 IPA，也没有绑定手机或车机。
+
+匿名源搜索具有局部真实网络证据，播放解析与完整后台旅程仍未通过；具体 profile、网络、退出结果和未测内容记录于 [音乐源可行性](../m0-source-feasibility.md)。这构成待验证风险，不构成已证明所有纯 C# 方案均不可行。
+
+当前保留本 ADR 的架构方向；没有新增服务器、JavaScript 执行依赖或 Kotlin/Swift 业务库。M0-06 的继续条件与容量边界见 [M0 记录](../m0-readiness.md)，未通过前不放行 M1。
+
 ## 参考依据
 
 - [MAUI 支持平台](https://learn.microsoft.com/en-us/dotnet/maui/supported-platforms?view=net-maui-10.0)

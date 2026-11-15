@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lyrava.App/Lyrava.App.csproj" />
+    <Project Path="src/Lyrava.Core/Lyrava.Core.csproj" />
+    <Project Path="src/Lyrava.Sources.YouTube/Lyrava.Sources.YouTube.csproj" />
+  </Folder>
+</Solution>

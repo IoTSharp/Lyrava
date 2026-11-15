@@ -1,6 +1,6 @@
 # 验收门禁
 
-当前状态：只有规划文档；应用、构建、签名、真实源、手机、车机及日常使用均为 **NOT_RUN**。
+当前状态：M0 已有 portable 工程、合同测试、音乐源和 iOS 媒体验证探针。共享工程检查、真实源的局部探测与 Windows iOS 托管编译分别留证；完整 iOS 原生构建、签名、手机、车机和日常使用门禁仍未通过。逐项结果见 [M0 记录](m0-readiness.md)。
 
 ## 证据格式
 
@@ -20,7 +20,26 @@
 
 ## 当前仓库检查
 
-当前没有 .NET 工程或应用 CI，不能填写虚构的构建命令。文档基线使用链接/ID核对、内容审阅及 `git diff --cached --check`。M0-02 引入实际工程时，必须同步记录并运行 restore、Release build、format 与相关测试的准确命令，随后接入相同的 CI。
+SDK 固定为 `10.0.404`。`Lyrava.slnx` 包含 Core、Source、SourceProbe 和两个合同测试工程；`Lyrava.App.slnx` 单独包含 iOS MAUI 验证客户端。portable 检查不能覆盖平台工程。
+
+Windows 使用 PowerShell 7+：
+
+```powershell
+pwsh -NoProfile -File ./eng/verify.ps1
+```
+
+脚本和 `.github/workflows/verify.yml` 运行以下同一组命令，每步默认 120 秒、整体默认 600 秒，失败即停止；脚本记录 PID、父 PID、启动时间、参数与退出码，取消/超时沿清理路径结束所属进程树。首次执行前检查脚本的参数边界；不要为通过检查而隐藏告警或跳过失败的测试。
+
+```text
+dotnet restore Lyrava.slnx --disable-parallel --disable-build-servers
+dotnet build Lyrava.slnx -c Release --no-restore --disable-build-servers -m:1 -nodeReuse:false -p:UseSharedCompilation=false
+dotnet format Lyrava.slnx --verify-no-changes --no-restore --verbosity minimal
+dotnet test Lyrava.slnx -c Release --no-build --no-restore --disable-build-servers -m:1 -nodeReuse:false --blame-hang-timeout 30s --logger "console;verbosity=normal"
+```
+
+本地脚本 PASS 与托管 CI PASS 分开记录。当前没有对本次工作树执行提交或推送，托管 CI 不继承本地结果。iOS 命令、当前 SDK/平台选择和真机操作步骤见 [iOS 验证](m0-ios-validation.md)；Windows 下 `Compile` 或跳过 Mac 目标的 build 返回 0，不代表已生成原生 Release IPA。
+
+文档检查包括相对链接、路线 ID/重复定义、状态、许可和变更一致性；使用 `git diff --check` 检查未暂存变更，暂存后再运行 `git diff --cached --check`。未跟踪的新文件也要检查 UTF-8、尾部空白和冲突标记，不能只依赖空的 staged diff。
 
 ## v0.1 的真实旅程
 

@@ -4,7 +4,7 @@
 
 使用 C#、.NET 和 MAUI 构建的开源音乐客户端，首个交付目标是在 iPhone 上实现稳定、可日常使用的蓝牙车载听歌体验。
 
-**当前阶段：项目规划。尚无可运行客户端、已签名 IPA 或应用发行版。路线图中的功能均不能视为已实现。**
+**当前阶段：M0 工程与可行性验证。** 已建立 C# 共享播放状态核心、有界音乐源探针和最小 iOS MAUI 媒体验证客户端；尚无已签名 IPA 或应用发行版。以下首版功能仍是交付目标，真机、车机和完整真实音乐源门禁尚未通过。
 
 ## 第一版的实际目标
 
@@ -32,12 +32,25 @@
 | [功能覆盖表](docs/feature-coverage.md) | Metrolist 及本次评估功能对应到哪个阶段 |
 | [架构](docs/architecture.md) | C# 共享层、平台层、音乐源、缓存与下载 |
 | [验收门禁](docs/quality-gates.md) | 代码、构建、签名、真机、车机和日常使用的独立证据 |
+| [M0 证据与开工门禁](docs/m0-readiness.md) | 实测结果、环境缺口、依赖清单和进入 M1 的条件 |
+| [iOS 验证](docs/m0-ios-validation.md) | 媒体验证客户端、Mac 构建命令和手机/车机步骤 |
+| [音乐源可行性](docs/m0-source-feasibility.md) | 纯 C# 匿名源探测与尚未成立的播放要求 |
 | [技术决策](docs/adr/0001-platform-and-distribution.md) | 技术栈、全 C# 边界、分发、许可证 |
 | [开发约定](AGENTS.md) | 自动化协作、验证和变更要求 |
 | [交接](HANDOFF.md) | 当前事实与下一步 |
 
 ## 当前可用入口
 
-目前可以审阅并完善项目规划。代码工程将在 `M0-02` 建立；当前没有可执行的应用构建、安装命令，也没有已通过的手机或车机验收。
+`global.json` 固定实际 SDK。`Lyrava.slnx` 包含共享核心、音乐源、命令行探针和合同测试；`Lyrava.App.slnx` 单独构建 iOS MAUI 验证客户端，避免把共享核心构建结果当作平台验收。
 
-开源许可为 [GPL-3.0-only](LICENSE)。本次只建立原创规划文档，尚未导入上游实现。后续参考或复用 Metrolist / InnerTubeX 时遵守 [来源说明](NOTICE)。
+使用 PowerShell 7+ 运行与 portable CI 相同的有界检查：
+
+```powershell
+pwsh -NoProfile -File ./eng/verify.ps1
+```
+
+脚本依次执行 restore、Release build、format verify 和测试，逐步设置超时并在失败时停止。准确命令及平台检查边界见[验收门禁](docs/quality-gates.md)。
+
+音乐源探针只输出数量、格式和失败类别，不输出临时媒体地址。fixture、搜索成功和 HTTP Range 分别只能证明各自范围，不能代替完整源站、iOS seek、锁屏或车机证据。
+
+开源许可为 [GPL-3.0-only](LICENSE)。M0 实现为新编写的 C# 代码，尚未导入上游实现。后续参考或复用 Metrolist / InnerTubeX 时遵守[来源说明](NOTICE)；当前依赖及其 AOT 验证边界见 [M0 记录](docs/m0-readiness.md)。

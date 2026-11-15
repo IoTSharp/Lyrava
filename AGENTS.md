@@ -2,7 +2,7 @@
 
 ## 产品与当前阶段
 
-先读 README、ROADMAP、HANDOFF 和相关 docs。当前只有规划基线，第一版目标是 iPhone 车载日常听歌；计划中的功能不能写成已支持。
+先读 README、ROADMAP、HANDOFF 和相关 docs。当前为 M0 工程与可行性验证，第一版目标是 iPhone 车载日常听歌；验证探针和计划中的功能不能写成已支持的日常客户端。
 
 技术基线为 .NET 10 + MAUI，自有客户端代码使用 C#。音乐源、共享状态、存储和平台媒体层保持明确边界。不得未经维护者决定引入 Kotlin/Swift 业务库、JavaScript 执行依赖、必需服务器或更改核心技术栈。
 
@@ -24,9 +24,9 @@
 
 ## 验证与交付
 
-遵守 docs/quality-gates.md。文档基线只做链接、ID、状态、许可和 Git 空白检查。当前没有应用工程，不能声称 build/test/手机/车机通过。
+遵守 docs/quality-gates.md。文档只做链接、ID、状态、许可和 Git 空白检查。portable 工程使用 SDK 10.0.404，运行 PowerShell 7+ 的 `pwsh -NoProfile -File ./eng/verify.ps1`，依次 restore、Release build、format 和测试；CI 运行同一脚本。实际结果必须重新执行并留证，不从已有记录继承 PASS。
 
-M0-02 建立工程时同步写出真实的 restore、Release build、format 和测试命令，并接入相同 CI。运行与改动相称的检查；mock、真实服务、AOT、签名、手机、车机、长稳和发行分别报告。
+`Lyrava.slnx` 是 portable 工程，`Lyrava.App.slnx` 是 iOS MAUI 工程。平台完整构建遵守 docs/m0-ios-validation.md；Windows 的 managed Compile 不等于 G2 完整 iOS 构建。运行与改动相称的检查；fixture、真实服务、AOT、签名、手机、车机、长稳、托管 CI 和发行分别报告。M0-06 未通过时不得把 M1 记为已开工或完成。
 
 Windows 的 PowerShell 必须使用 7+；不得回退 Windows PowerShell 5.1。继承用户机器规则：有界循环/搜索/执行、工具从 PATH 或明确路径发现、按任务归属回收进程/临时文件。禁止全盘工具扫描，禁止按进程名批量终止共享进程。远程 shell 必须安全传递脚本。公共网络失败采用进程内或单次代理设置。
 
