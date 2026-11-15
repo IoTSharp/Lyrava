@@ -1,6 +1,6 @@
 # Lyrava 交接
 
-更新日期：2026-11-15（Asia/Shanghai）。分支：`main`。Windows-only M0 基线提交：`c6d6206`；当前工作树包含 M1-01/M1-02 Windows 后续切片未提交改动。
+更新日期：2026-11-15（Asia/Shanghai）。分支：`main`。Windows-only M0 基线提交：`c6d6206`；M1-01/M1-02 已在提交 `0e4e988` 完成首批切片，本次 M1-03/M1-04 状态合同和生命周期审计已完成并纳入后续提交。
 
 ## 已确定与已完成
 
@@ -33,10 +33,10 @@
 ## 下一顺序
 
 1. 完成 M1-01/M1-02 的真实 Windows 源、播放页状态、队列操作和系统媒体运行回执；私有凭据不进入仓库或对话。
-2. 实现 M1-03 本地收藏/歌单/恢复和 M1-04 后台/系统媒体产品化，保持单一播放器所有权。
+2. 继续实现 M1-03 磁盘持久化、收藏/歌单 UI 和恢复回执，以及 M1-04 的真实系统媒体面板/长稳回执；本轮状态合同和生命周期审计已通过代码级验证。
 3. 在 M1-05 继续 `M0-05` 的真实可播放曲目、格式、Range/seek、受控失效/自然过期、会话刷新和 Windows 网络恢复行为。
 4. 在 M1-07 完成 Windows Release、MSIX 或受支持安装包、安装升级和日常观察证据。
-4. Android、iOS、Mac、签名、真机、车机和平台专属媒体能力按后续阶段单独实施。
+5. Android、iOS、Mac、签名、真机、车机和平台专属媒体能力按后续阶段单独实施。
 
 ## 验证口径
 
@@ -44,8 +44,8 @@
 
 ## 归属与授权
 
-本次会话由维护者明确授权使用多个智能体完成 M0-06 Windows-only 收口；各智能体按不重叠目录工作，由主监督者整合。文档收口本身不代表创建安装包、部署或外部发布；未获得 Mac/签名/设备输入前不宣称 iOS/Android 平台完成。后续智能体开始时必须重新读取 Git 状态及当前文档，不覆盖其他会话工作。
+本次会话由维护者明确授权使用多个智能体完成 Windows M1 后续切片；各智能体按不重叠目录工作，由主监督者整合。文档收口本身不代表创建安装包、部署或外部发布；未获得 Mac/签名/设备输入前不宣称 iOS/Android 平台完成。后续智能体开始时必须重新读取 Git 状态及当前文档，不覆盖其他会话工作。
 
 仓库中不保存本任务的临时工具文件、运行时截图、登录状态或签名资产。所有本次监督子任务均已完成并保持空闲；只保留正常 `bin/obj` 构建输出和共享缓存，没有本任务需要长期保留的后台服务。匿名 CI 日志端点因 403 未能提供 Ubuntu 失败细节；不得据此猜测原因或继承本地 PASS。
 
-本次监督会话保留的未提交文件：`CHANGELOG.md`、`HANDOFF.md`、`ROADMAP.md`、`README.md`、`README.zh-CN.md`、`docs/adr/0001-platform-and-distribution.md`、`docs/architecture.md`、`docs/feature-coverage.md`、`docs/m0-ios-validation.md`、`docs/m0-readiness.md`、`docs/m0-source-feasibility.md`、`docs/m0-windows-validation.md`、`docs/quality-gates.md`、`src/Lyrava.App/App.cs`、`src/Lyrava.App/Lyrava.App.csproj`、`src/Lyrava.App/MauiProgram.cs`、`src/Lyrava.App/MediaProbePage.cs`、`src/Lyrava.App/Playback/IMediaPlaybackService.cs`、`src/Lyrava.App/Platforms/iOS/IosPlaybackService.cs`、`src/Lyrava.App/Platforms/Windows/App.xaml`、`src/Lyrava.App/Platforms/Windows/App.xaml.cs`、`src/Lyrava.App/Platforms/Windows/WindowsPlaybackService.cs`。最终 portable 验证、Windows Debug/Release build 和 iOS managed Debug build 均通过；提交和推送仍等待维护者单独授权。
+上一轮 M1-01/M1-02 文件已纳入 `0e4e988` 并推送到 `origin/main`。本次新增的状态合同、生命周期审计和路线文档改动必须在最终验证后一起提交；磁盘持久化、真实系统媒体面板和长稳运行仍未通过。

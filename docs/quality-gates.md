@@ -1,6 +1,6 @@
 # 验收门禁
 
-当前状态：Windows-only M0 已完成工程、合同测试、Windows 播放切片、容量边界和后置平台记录。共享工程检查、Windows managed 编译与真实源的局部探测分别留证；Windows 运行/安装包、真实源和完整 iOS 原生构建、签名、手机、车机门禁继续作为 M1/OPS 或后续平台门禁。逐项结果见 [M0 记录](m0-readiness.md)。
+当前状态：Windows-only M0 已完成工程、合同测试、Windows 播放切片、容量边界和后置平台记录；M1-01/M1-02 已有首批 Windows 搜索/队列切片，M1-03/M1-04 正在推进。共享工程检查、Windows managed 编译与真实源的局部探测分别留证；Windows 运行/安装包、真实源和完整 iOS 原生构建、签名、手机、车机门禁继续作为 M1/OPS 或后续平台门禁。逐项结果见 [M0 记录](m0-readiness.md)。
 
 ## 证据格式
 

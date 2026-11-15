@@ -17,5 +17,6 @@
 - M0-02/M0-06 Windows control-plane slice: wired `SystemMediaTransportControls` playback buttons, metadata, timeline updates and bounded position requests into the single Windows playback service. System-panel and release runtime evidence remains unrun.
 - M0-06 scope closure: the maintainer defined the current M0 as Windows-only; the Windows implementation, engineering baseline, capacity limits and known gaps close M0-06. Real source playback, MSIX, install/upgrade, daily use and Android/iOS validation remain later gates.
 - M1 Windows slices: added bounded search/browse state and page, metadata-only playback queue contracts with Core tests, a serialized Windows queue coordinator, and a Windows root shell joining search, queue controls, and the existing media probe. Real source playback, full product queue behavior, packaging, and daily-use evidence remain open.
+- M1-03/M1-04 follow-up started: local playback-state persistence contract and Windows lifecycle/system-media audit are being evaluated as separate implementation slices; no disk persistence or real system-panel acceptance is claimed yet.
 
 No application features or installable packages have been released.
