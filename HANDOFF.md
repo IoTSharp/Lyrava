@@ -1,6 +1,6 @@
 # Lyrava 交接
 
-更新日期：2026-11-15（Asia/Shanghai）。分支：`main`。Windows-only M0 基线提交：`8976d56`；本次 M0-06 Windows-only 收口包含验证脚本与状态文档。
+更新日期：2026-11-15（Asia/Shanghai）。分支：`main`。Windows-only M0 基线提交：`c6d6206`；当前工作树包含 M1-01/M1-02 Windows 后续切片未提交改动。
 
 ## 已确定与已完成
 
@@ -17,6 +17,7 @@
 - 使用同一 Release unpackaged 产物做了 8 秒启动烟测：`Lyrava.App.exe` PID `35684` 成功保持运行，随后仅清理本次创建的进程树，PID 回读为 `PID_CLEAN`。这只证明启动/清理边界，真实音频、系统媒体面板和日常运行仍 `NOT_RUN`。
 - 维护者在本次新会话明确 Windows 版本实现即可完成当前 M0；Android、iOS、Mac、签名、真机、车机和平台专属媒体能力后置。M0-06 以 Windows-only 范围关闭，真实源、系统面板、MSIX、安装升级和日常使用继续作为 M1/OPS 门禁。
 - M0-06 收口新增 `eng/verify-windows.ps1`：固定 SDK/Windows TFM，执行 App restore、Release build、format、8 秒 unpackaged 启动和所属进程树清理；本次脚本 exit 0，真实源、系统媒体面板、MSIX/安装升级和长时间使用明确输出 `NOT_RUN`。
+- 本次后续实现新增 M1-01 Windows 搜索/浏览页、10 秒可取消搜索状态、M1-02 metadata-only `PlaybackQueue` 合同与 18 项 Core 测试、Windows 队列协调器和 Windows 根/队列页面；Windows Release build、App format、portable 验证和 iOS managed Compile 回归通过。
 - 远端 run `43676740983` 已完成但整体失败：Windows job `132698426583` PASS，Ubuntu job `132698426746` 在共享验证步骤 FAIL；匿名日志端点返回 403，失败细节暂不能归因。该结果与本地 PASS 分开记账。
 - 本次监督复核重新执行两次代理源旅程，均未取得可播放地址：`YouTube Audio Library --visionos` 返回 `Network/results=0`，`Creative Commons music` 返回 `results=0`；因此 M0-05 仍未完成，媒体/Range/seek/过期/后台换曲保持 NOT_RUN 或 FAIL。
 - M0-03/M0-04 文档已补充脱敏验收回执模板；没有 Mac/Xcode、签名、iPhone、车机和合法固定音源输入，相关门禁仍为 blocked/NOT_RUN。
@@ -31,9 +32,10 @@
 
 ## 下一顺序
 
-1. 进入 M1-01 至 M1-04，实现 Windows 搜索、队列、产品播放页、后台和系统媒体控制产品化；私有凭据不进入仓库或对话。
-2. 在 M1-05 继续 `M0-05` 的真实可播放曲目、格式、Range/seek、受控失效/自然过期、会话刷新和 Windows 网络恢复行为。
-3. 在 M1-07 完成 Windows Release、MSIX 或受支持安装包、安装升级、系统媒体控制和日常观察证据。
+1. 完成 M1-01/M1-02 的真实 Windows 源、播放页状态、队列操作和系统媒体运行回执；私有凭据不进入仓库或对话。
+2. 实现 M1-03 本地收藏/歌单/恢复和 M1-04 后台/系统媒体产品化，保持单一播放器所有权。
+3. 在 M1-05 继续 `M0-05` 的真实可播放曲目、格式、Range/seek、受控失效/自然过期、会话刷新和 Windows 网络恢复行为。
+4. 在 M1-07 完成 Windows Release、MSIX 或受支持安装包、安装升级和日常观察证据。
 4. Android、iOS、Mac、签名、真机、车机和平台专属媒体能力按后续阶段单独实施。
 
 ## 验证口径
