@@ -1,10 +1,8 @@
-using Lyrava.App.Platforms.iOS;
-
 namespace Lyrava.App;
 
 public sealed class MediaProbePage : ContentPage
 {
-    private readonly IosPlaybackService _playback;
+    private readonly IMediaPlaybackService _playback;
     private readonly Entry _address = new()
     {
         Placeholder = "HTTPS audio URL (memory only)",
@@ -28,9 +26,18 @@ public sealed class MediaProbePage : ContentPage
     private readonly Button _play = new() { Text = "Load and play", AutomationId = "LoadAndPlay" };
     private CancellationTokenSource? _command;
 
-    public MediaProbePage(IosPlaybackService playback)
+    public MediaProbePage(IMediaPlaybackService playback)
     {
         _playback = playback;
+#if IOS
+        const string platformTitle = "Lyrava · iOS media probe";
+        const string platformDescription = "Device validation pending. This probe does not establish car, background or source compatibility.";
+        const string journeyDescription = "Source journey: at most two public IDs and 30 minutes. Item two resolves only after item one ends. Pause/stop/disconnect cancels the journey. Metadata and AVPlayer use their own system network paths.";
+#else
+        const string platformTitle = "Lyrava · Windows media probe";
+        const string platformDescription = "Windows playback slice. System media controls and release packaging remain separate validation gates.";
+        const string journeyDescription = "Source journey: at most two public IDs and 30 minutes. Item two resolves only after item one ends. Pause/stop cancels the journey. Metadata and Windows MediaPlayer use their own system network paths.";
+#endif
         Title = "Lyrava · M0 media probe";
         var pause = new Button { Text = "Pause" };
         var resume = new Button { Text = "Resume" };
@@ -55,11 +62,11 @@ public sealed class MediaProbePage : ContentPage
                 Spacing = 14,
                 Children =
                 {
-                    new Label { Text = "M0 · iOS media feasibility", FontSize = 26, FontAttributes = FontAttributes.Bold },
-                    new Label { Text = "Device validation pending. This probe does not establish car, background or source compatibility." },
+                    new Label { Text = platformTitle, FontSize = 26, FontAttributes = FontAttributes.Bold },
+                    new Label { Text = platformDescription },
                     new Label { Text = "Use an audio file you may access. The URL stays in memory and is never included in status or diagnostics." },
                     _address, _play,
-                    new Label { Text = "Source journey: at most two public IDs and 30 minutes. Item two resolves only after item one ends. Pause/stop/disconnect cancels the journey. Metadata and AVPlayer use their own system network paths." },
+                    new Label { Text = journeyDescription },
                     _videoIds, sourceJourney, pause, resume, _position, stop, _state
                 }
             }

@@ -1,6 +1,6 @@
 # M0-02 / M0-03 / M0-04：iOS 媒体验证入口
 
-记录日期：2026-11-12（Asia/Shanghai）。源码基线：`f71ce77` 加本次未提交工作树；实现入口为 [Lyrava.App](../src/Lyrava.App/Lyrava.App.csproj)。本记录不证明 iPhone 或车机可用。
+记录日期：2026-11-15（Asia/Shanghai）。源码基线：`ee4da7fa` 加本次未提交工作树；实现入口为 [Lyrava.App](../src/Lyrava.App/Lyrava.App.csproj)。本记录不证明 iPhone 或车机可用。
 
 ## 已实现的验证工具
 
@@ -82,6 +82,43 @@ dotnet publish src/Lyrava.App/Lyrava.App.csproj -c Release -p:RuntimeIdentifier=
 8. 源旅程每次最多两条 ID、30 分钟，记录超时自动停止；第一首播放/准备中主动暂停、停止、断开车机后，第二首不能被解析或启动。覆盖第一首/第二首正在解析时发生中断：中断结束前不能启动原生播放，已经取消的旅程不会自行恢复。准备时主动暂停、待媒体 Ready 后手动恢复，时长和seek入口应正确恢复。元数据 HttpClient 与系统 AVPlayer 的网络路径分别留证，App不假定元数据可访问即媒体可访问。
 
 本工具提供验证入口，M0-03/04 的 `done` 仍依赖真实签名和设备证据，M0-06 在此之前不放行。
+
+## 脱敏验收回执模板（M0-03/M0-04）
+
+每次在私有设备上执行一轮验收时复制以下模板，使用同一份源码和已签名 Release IPA。公开回执只填可公开的摘要；精确 UDID、Apple 账号、描述文件内容、私钥、授权头、cookie、有效媒体地址、个人媒体记录和包含这些信息的原始截图留在私有环境。没有对应输入或实际步骤时填 `NOT_RUN`，不要用构建或模拟器结果代替。
+
+```text
+记录 ID：M0-03/M0-04-YYYYMMDD-NN
+记录时间（Asia/Shanghai）：
+源码身份（commit 或工作树摘要）：
+IPA：版本 / App ID（可公开部分）/ SHA-256 摘要
+
+构建环境：Mac 型号；macOS 版本；Xcode 版本；xcode-select 路径；.NET SDK/workload；iOS SDK
+签名安装：Ad Hoc 条件已配置（PASS/FAIL/NOT_RUN）；登记设备安装（PASS/FAIL/NOT_RUN）
+设备：iPhone 型号 / iOS 版本（UDID 仅私有台账）
+车机：型号 / 固件；连接方式；实际支持的媒体命令
+网络：Wi-Fi/蜂窝与是否存在代理（不记录凭据或内部地址）
+固定音源：合法来源说明 / 脱敏 ID（不得记录有效签名 URL）
+
+场景结果：
+  - G2 Release 包、脱离调试器启动：PASS/FAIL/NOT_RUN；摘要：
+  - G4 冷启动、播放/暂停/恢复/seek/停止：PASS/FAIL/NOT_RUN；摘要：
+  - G4 锁屏、切换应用、后台连续播放及第二首：PASS/FAIL/NOT_RUN；摘要：
+  - G4 系统播放/暂停/停止、锁屏信息和远程按键：PASS/FAIL/NOT_RUN；摘要：
+  - G4 来电/Siri/导航中断（每类至少 3 次）：PASS/FAIL/NOT_RUN；摘要：
+  - G4 Wi-Fi/蜂窝切换、受控失效/自然到期：PASS/FAIL/NOT_RUN；摘要：
+  - G5 蓝牙连接、支持命令、断开/熄火至少 3 次：PASS/FAIL/NOT_RUN；摘要：
+  - G5 重连不擅自外放：PASS/FAIL/NOT_RUN；摘要：
+  - 取消、快速换源、窗口销毁后的资源释放：PASS/FAIL/NOT_RUN；摘要：
+
+脱敏证据位置：私有日志/截图索引（只填路径或编号，不粘贴原始敏感内容）
+未覆盖范围与阻塞：
+M0-03 判定：PASS/FAIL/NOT_RUN/blocked
+M0-04 判定：PASS/FAIL/NOT_RUN/blocked
+复核人：
+```
+
+回执中的 `PASS` 只代表对应一行场景在列出的设备和版本上实际观察到预期结果；IPA 签名、iPhone 真机、车机和合法可播音源任一缺失，都必须保留相应的 `NOT_RUN` 或 `blocked`。M0-04 的结果不能反向证明 M0-05 的真实源、Range/seek 或 token 刷新已经通过。
 
 ## 来源与依赖
 

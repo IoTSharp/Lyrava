@@ -1,6 +1,6 @@
 # 验收门禁
 
-当前状态：M0 已有 portable 工程、合同测试、音乐源和 iOS 媒体验证探针。共享工程检查、真实源的局部探测与 Windows iOS 托管编译分别留证；完整 iOS 原生构建、签名、手机、车机和日常使用门禁仍未通过。逐项结果见 [M0 记录](m0-readiness.md)。
+当前状态：M0 已有 portable 工程、合同测试、音乐源、Windows 播放切片和后置 iOS 媒体验证探针。共享工程检查、Windows managed 编译与真实源的局部探测分别留证；Windows 运行/安装包和完整 iOS 原生构建、签名、手机、车机门禁仍未通过。逐项结果见 [M0 记录](m0-readiness.md)。
 
 ## 证据格式
 
@@ -20,7 +20,7 @@
 
 ## 当前仓库检查
 
-SDK 固定为 `10.0.404`。`Lyrava.slnx` 包含 Core、Source、SourceProbe 和两个合同测试工程；`Lyrava.App.slnx` 单独包含 iOS MAUI 验证客户端。portable 检查不能覆盖平台工程。
+SDK 固定为 `10.0.404`。`Lyrava.slnx` 包含 Core、Source、SourceProbe 和两个合同测试工程；`Lyrava.App.slnx` 包含 Windows MAUI 播放切片和后置 iOS 探针。portable 检查不能覆盖平台工程。
 
 Windows 使用 PowerShell 7+：
 
@@ -37,7 +37,18 @@ dotnet format Lyrava.slnx --verify-no-changes --no-restore --verbosity minimal
 dotnet test Lyrava.slnx -c Release --no-build --no-restore --disable-build-servers -m:1 -nodeReuse:false --blame-hang-timeout 30s --logger "console;verbosity=normal"
 ```
 
-本地脚本 PASS 与托管 CI PASS 分开记录。当前没有对本次工作树执行提交或推送，托管 CI 不继承本地结果。iOS 命令、当前 SDK/平台选择和真机操作步骤见 [iOS 验证](m0-ios-validation.md)；Windows 下 `Compile` 或跳过 Mac 目标的 build 返回 0，不代表已生成原生 Release IPA。
+本地脚本 PASS 与托管 CI PASS 分开记录。远端矩阵的每个 job 都必须成功；单个 job PASS 不能覆盖另一个 job FAIL。当前基线 run [43676740983](https://github.com/IoTSharp/Lyrava/actions/runs/43676740983) 已完成但为 `failure`：Windows job PASS，Ubuntu job 在共享验证步骤 FAIL；该结果与本地 PASS 分开记账，不能推导设备或真实源站通过。iOS 命令、当前 SDK/平台选择和真机操作步骤见 [iOS 验证](m0-ios-validation.md)；Windows 下 `Compile` 或跳过 Mac 目标的 build 返回 0，不代表已生成原生 Release IPA。
+
+Windows 首发切片的目标框架和本次复核命令为：
+
+```text
+dotnet restore Lyrava.App.slnx --disable-parallel --disable-build-servers
+dotnet build src/Lyrava.App/Lyrava.App.csproj -f net10.0-windows10.0.19041.0 -c Debug --no-restore --disable-build-servers -m:1 -nodeReuse:false -p:UseSharedCompilation=false
+```
+
+本次 Windows Debug build 为 exit `0`、0 warnings、0 errors。该结果只证明托管代码和目标框架可编译；当前 `WindowsPackageType=None`，MSIX、系统媒体控制、真实播放、窗口生命周期和日常使用仍是 NOT_RUN 或独立门禁。iOS managed build 的命令和设备步骤见 [iOS 验证](m0-ios-validation.md)。
+
+Windows 服务已把 `MediaPlayer.SystemMediaTransportControls` 的播放/暂停/停止、元数据、时间线和位置请求接入单一播放器；后续系统面板按键、进度拖动和窗口关闭观察仍必须作为 G2/G7 运行证据单独记录。2026-11-15 重新执行 App restore 与 Windows Release build 均 exit `0`、0 warnings、0 errors，这只更新平台构建层证据。
 
 文档检查包括相对链接、路线 ID/重复定义、状态、许可和变更一致性；使用 `git diff --check` 检查未暂存变更，暂存后再运行 `git diff --cached --check`。未跟踪的新文件也要检查 UTF-8、尾部空白和冲突标记，不能只依赖空的 staged diff。
 

@@ -2,7 +2,7 @@
 
 - 日期：2026-11-11
 - 状态：已采纳架构方向；实现与设备可行性仍待 M0 验证。
-- 范围：Lyrava 全部客户端及第一版交付。
+- 范围：Lyrava 全部客户端及第一版交付。2026-11-15 起，第一版优先 Windows 桌面，iPhone 后置。
 
 ## 背景
 
@@ -15,14 +15,15 @@
 3. 共享队列与业务核心；使用 C# 调用各平台原生媒体能力。iOS 采用 AVFoundation/MediaPlayer。
 4. YouTube/InnerTube 音乐源为独立适配边界。纯 C# token/签名和后台换曲是否成立由 M0 验证。
 5. 初始架构没有必需的服务器；不默认引入 Kotlin 业务二进制或 JavaScript 执行依赖。需要改变时新增 ADR 并取得维护者对范围变化的决定。
-6. v0.1 以 iPhone 为发布验收平台，普通蓝牙音频为核心；Android、桌面、高级功能和 CarPlay 分阶段实施。
-7. iPhone 首期采用 Apple Developer Program 的 Ad Hoc 分发，登记设备并维护签名。手动传输 IPA 不等于免签名安装。
+6. v0.1 以 Windows 桌面为首个发布验收平台，使用 C# `Windows.Media.Playback.MediaPlayer`；iPhone、普通蓝牙车载、Android、macOS、高级功能和 CarPlay 分阶段实施。
+7. Windows 首发先验证受支持安装包和升级路径；iPhone 后续仍采用 Apple Developer Program 的 Ad Hoc 分发，登记设备并维护签名。手动传输 IPA 不等于免签名安装。
 8. 仓库新增作品采用 **GPL-3.0-only**，保持与计划中的 GPLv3 上游复用方向兼容。后续导入代码时逐文件审查其原许可并保留声明。
 9. 版本维护单独规划。MAUI 10 官方支持到 2027-05-11，不能用 .NET 10 的支持周期代替 MAUI 的周期。
 
 ## 后果与未决项
 
-- 正常 iOS 构建和签名需要兼容 Mac/Xcode。Windows 可以承担共享核心和 UI 开发。
+- Windows 首发可以在 Windows 主机上完成托管编译和运行验收；当前 unpackaged build 不能替代 MSIX 或其他受支持安装包。
+- 正常 iOS 构建和签名需要兼容 Mac/Xcode；Windows 可以承担共享核心和 UI 开发。
 - AOT、裁剪、原生依赖和签名要在真实 Release 包验证。
 - 注册设备数量、描述文件有效期和平台授权继续适用；不承诺任意 iPhone 安装。
 - Google/YouTube 非公开接口变化需要持续维护；无法用一次移植获得永久兼容保证。
@@ -37,6 +38,10 @@
 匿名源搜索具有局部真实网络证据，播放解析与完整后台旅程仍未通过；具体 profile、网络、退出结果和未测内容记录于 [音乐源可行性](../m0-source-feasibility.md)。这构成待验证风险，不构成已证明所有纯 C# 方案均不可行。
 
 当前保留本 ADR 的架构方向；没有新增服务器、JavaScript 执行依赖或 Kotlin/Swift 业务库。M0-06 的继续条件与容量边界见 [M0 记录](../m0-readiness.md)，未通过前不放行 M1。
+
+## 首发平台调整（2026-11-15）
+
+维护者将首发顺序调整为 Windows 优先，iPhone 后续实现。该调整不改变 .NET 10、MAUI、C#、共享核心、音乐源边界或不引入必需服务器/脚本运行时的约束；它只改变 M1 的首个平台和验收顺序。Windows 播放切片、构建边界和未完成的运行/安装门禁记录于 [Windows 验证](../m0-windows-validation.md)。iPhone 的 M0-03/M0-04 仍保留为后续平台门禁，不再作为 Windows 首发的隐含通过条件。
 
 ## 参考依据
 

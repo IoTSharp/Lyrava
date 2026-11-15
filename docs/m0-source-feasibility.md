@@ -1,6 +1,12 @@
 # M0-05 · C# 音乐源首次验证
 
-日期：2026-11-12（Asia/Shanghai）。源码身份：`main` 的 `f71ce77` 加本次未提交工作树；运行环境为 Windows x64、.NET SDK `10.0.404`、Release `net10.0`。本记录是首次探针结果，**M0-05 尚未通过，G3 为部分验证且播放链路阻塞**。
+日期：2026-11-15（Asia/Shanghai）。源码身份：`main` 的 `ee4da7fa0c3f69ed309cf1c09d109721e6bd349f` 加本次未提交工作树；运行环境为 Windows x64、PowerShell `7.6.0`、.NET SDK `10.0.404`、Release `net10.0`。Windows 已成为首发优先平台，iPhone 后置；本记录仍是源适配器的首次探针结果及监督复核，**M0-05 尚未通过，G3 为部分验证且播放链路阻塞**。
+
+## 2026-11-15 监督复核
+
+- 本地 `Lyrava.Sources.YouTube.Tests` Release 测试 28/28 通过，包含 fixture 形状漂移、取消、过期、Range、地址脱敏和 VisionOS bootstrap；这是离线合同证据，不是源站播放证据。
+- GitHub Actions run `43676740983` 已完成但整体失败：Windows job `132698426583` 成功，Ubuntu job `132698426746` 失败。匿名 check-run 注释只提供 `Process completed with exit code 1`，日志端点返回 403，因此不能把失败步骤归因到源适配器；Actions 的 Node 20 弃用注释也不构成 M0-05 证据。
+- 通过本机代理重新执行 `journey "YouTube Audio Library" --proxy --visionos`，搜索返回 `Network`、`results=0`，exit 2；重新执行 `journey "Creative Commons music" --proxy`，搜索完成但 `results=0`，随后 `resolve=NOT_RUN`、`range=NOT_RUN`，exit 2。两次均未取得可播放媒体地址，不能更新任何真实源、Range 或 seek 门禁。
 
 ## 已实现边界
 

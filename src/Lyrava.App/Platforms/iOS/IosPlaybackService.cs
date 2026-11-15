@@ -9,10 +9,8 @@ using MediaPlayer;
 
 namespace Lyrava.App.Platforms.iOS;
 
-public sealed record MediaProbeView(string Intent, string NativeStatus, TimeSpan Position, TimeSpan? Duration, string Result);
-
 /// <summary>A single application-owned native player for M0; no URL or native error text is logged.</summary>
-public sealed class IosPlaybackService : IDisposable
+public sealed class IosPlaybackService : IMediaPlaybackService
 {
     private readonly PlaybackSessionState _state = new();
     private readonly AVPlayer _player = new();

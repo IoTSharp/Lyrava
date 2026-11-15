@@ -1,8 +1,6 @@
-using Lyrava.App.Platforms.iOS;
-
 namespace Lyrava.App;
 
-public sealed class App(MediaProbePage page, IosPlaybackService playback) : Application
+public sealed class App(MediaProbePage page, IMediaPlaybackService playback) : Application
 {
     protected override Window CreateWindow(IActivationState? activationState)
     {

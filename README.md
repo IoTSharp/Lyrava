@@ -2,21 +2,21 @@
 
 [简体中文](README.zh-CN.md)
 
-An open-source music client built with C# and .NET, starting with reliable everyday listening on iPhone and Bluetooth car stereos.
+An open-source music client built with C# and .NET, starting with reliable everyday listening on Windows desktop. The iPhone and Bluetooth car experience follows as a later platform track.
 
-**Status: M0 engineering and feasibility validation.** The repository now contains a shared C# playback-state core, a bounded music-source probe and a minimal iOS MAUI media probe. There is no signed IPA or application release. The first-delivery features below remain targets; real-device and car acceptance are still open.
+**Status: M0 engineering and feasibility validation.** The repository now contains a shared C# playback-state core, a bounded music-source probe, and a Windows MAUI playback slice with a later iOS probe. There is no packaged Windows release or signed IPA. The first-delivery features below remain targets; source, package and runtime acceptance are still open.
 
 ## First delivery
 
-The first usable release, planned as **v0.1**, targets iPhone: music discovery, local playlists and favorites, a persistent playback queue, background and lock-screen playback, system media controls, Bluetooth car audio, interruption handling, and recovery from mobile-network changes. Distribution targets registered devices through Apple Ad Hoc signing.
+The first usable release, planned as **v0.1**, targets Windows desktop: music discovery, local playlists and favorites, a persistent playback queue, background/window-lifecycle playback, Windows system media controls, interruption handling, and recovery from network changes. The initial desktop slice is unpackaged; MSIX packaging and daily-use acceptance remain separate gates.
 
-The full roadmap retains account synchronization, offline downloads, synchronized lyrics, Android, Windows and macOS clients, advanced audio, recognition, social listening, and external integrations. CarPlay and platform-specific widgets have separate feasibility gates.
+The full roadmap retains the later iPhone and Bluetooth car experience, account synchronization, offline downloads, synchronized lyrics, Android, macOS, advanced audio, recognition, social listening, and external integrations. CarPlay and platform-specific widgets have separate feasibility gates.
 
 ## Technical direction
 
 - .NET 10 and .NET MAUI; application UI, business logic, and platform adapters authored in C#.
 - Shared playback state and queue; platform-owned audio engines and media sessions.
-- iOS playback through C# bindings to AVFoundation and MediaPlayer.
+- Windows playback through the C# `Windows.Media.Playback.MediaPlayer` API; iOS playback remains a later C# binding target for AVFoundation and MediaPlayer.
 - A replaceable music-source adapter; YouTube/InnerTube compatibility is a separate technical risk.
 - Local SQLite metadata, bounded media caching, and operating-system secure storage for credentials.
 - No mandatory server in the initial architecture. A resolver service or non-C# runtime requires an explicit architecture decision before adoption.
@@ -32,7 +32,8 @@ MAUI's support lifecycle is separate from .NET's lifecycle. The current .NET MAU
 | [Architecture](docs/architecture.md) | Shared C# code, native platform boundaries, source and storage design |
 | [Quality gates](docs/quality-gates.md) | Source, build, signing, device, car and daily-use evidence |
 | [M0 evidence and readiness](docs/m0-readiness.md) | Current results, environment gaps, dependency inventory and the M1 gate |
-| [iOS validation](docs/m0-ios-validation.md) | Media probe, Mac build instructions and device/car scenarios |
+| [Windows validation](docs/m0-windows-validation.md) | Windows MAUI build, media probe and package/runtime boundaries |
+| [iOS validation](docs/m0-ios-validation.md) | Later iOS media probe, Mac build instructions and device/car scenarios |
 | [Source feasibility](docs/m0-source-feasibility.md) | Anonymous C# source experiments and unresolved playback requirements |
 | [Architecture decision](docs/adr/0001-platform-and-distribution.md) | Language, platform, distribution and license decisions |
 | [Contribution guide](CONTRIBUTING.md) | How to propose and deliver changes |
@@ -41,7 +42,7 @@ MAUI's support lifecycle is separate from .NET's lifecycle. The current .NET MAU
 
 ## Development status
 
-The exact SDK is pinned in `global.json`. `Lyrava.slnx` contains the portable core, source adapter, command-line source probe and contract tests. `Lyrava.App.slnx` contains the iOS MAUI probe; it is a separate platform build so portable checks do not imply iOS acceptance.
+The exact SDK is pinned in `global.json`. `Lyrava.slnx` contains the portable core, source adapter, command-line source probe and contract tests. `Lyrava.App.slnx` contains the Windows MAUI slice and the later iOS probe; platform builds are separate from portable checks.
 
 Run the same bounded checks as the portable CI with PowerShell 7 or later:
 
@@ -53,7 +54,14 @@ The script runs restore, a Release build, format verification and tests. Each st
 
 The source probe reads public source data and reports counts, supported format and failure categories. It keeps temporary media addresses out of console output. A successful fixture or search request does not establish playable music, native seek or background playback; see [source feasibility](docs/m0-source-feasibility.md).
 
-Normal iOS builds and signing require a compatible Mac/Xcode environment, even when application code is authored on Windows. Ad Hoc distribution requires registered device identifiers and valid signing assets; an IPA is not an unrestricted installer.
+Build the first Windows slice with the installed MAUI Windows workload:
+
+```powershell
+dotnet restore ./Lyrava.App.slnx --disable-parallel --disable-build-servers
+dotnet build ./src/Lyrava.App/Lyrava.App.csproj -f net10.0-windows10.0.19041.0 -c Release --no-restore --disable-build-servers -m:1 -nodeReuse:false -p:UseSharedCompilation=false
+```
+
+This produces an unpackaged Windows build. It does not prove MSIX packaging, system media-control behavior, long-running playback, or source-site availability. Later iOS builds and signing still require a compatible Mac/Xcode environment, registered devices and valid signing assets.
 
 ## License and provenance
 

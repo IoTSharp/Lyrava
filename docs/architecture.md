@@ -1,6 +1,6 @@
 # Lyrava 技术架构
 
-状态：M0 工程和验证探针已建立；以下完整产品链路仍含计划能力。实际实现与门禁见 [M0 记录](m0-readiness.md)，方向决策见 [ADR 0001](adr/0001-platform-and-distribution.md)。
+状态：M0 工程和验证探针已建立，Windows 首发垂直切片已进入实现；以下完整产品链路仍含计划能力。实际实现与门禁见 [M0 记录](m0-readiness.md)，方向决策见 [ADR 0001](adr/0001-platform-and-distribution.md)。
 
 ## 产品链路
 
@@ -10,8 +10,9 @@ flowchart TD
     CORE <--> SOURCE[音乐源适配]
     CORE <--> DATA[SQLite 与受控缓存]
     CORE <--> SESSION[平台媒体会话]
+    SESSION --> WINDOWS[Windows MediaPlayer]
     SESSION --> IOS[iOS AVFoundation 与 MediaPlayer]
-    SESSION --> OTHER[Android / Windows / macOS]
+    SESSION --> OTHER[Android / macOS]
     IOS --> ROUTE[iOS 音频路由]
     ROUTE --> CAR[蓝牙车机]
 ```
@@ -22,7 +23,7 @@ flowchart TD
 
 | 单元 | 当前实现及后续职责 | 边界 |
 | --- | --- | --- |
-| `Lyrava.App` | 已有 C# 媒体验证页、单例 iOS 原生播放器及依赖装配；产品页面仍待 M1 | 视图不拥有长期播放器生命周期 |
+| `Lyrava.App` | 已有 C# 媒体验证页、平台无关播放服务合同、Windows `MediaPlayer` 播放切片和 iOS 原生播放器；产品页面仍待 M1 | 视图不拥有长期播放器生命周期 |
 | `Lyrava.Core` | 已有曲目元数据、播放意图和中断/暂停状态合同；队列、收藏和歌单待 M1 | 不引用 MAUI 或平台媒体类型 |
 | `Lyrava.Sources.YouTube` | 已有匿名搜索、直接 AAC/MP4 地址选择、有效期和 Range 探针；完整会话与播放可行性仍待证 | 不操作 UI；不把临时地址或凭据泄漏到日志 |
 | `Lyrava.Storage`（计划） | SQLite、迁移、缓存索引、下载记录，当前未创建该工程 | 媒体文件与元数据分离；有配额和完整性检查 |
@@ -33,9 +34,10 @@ flowchart TD
 ## 播放与平台适配
 
 - 共享层持有队列和逻辑状态，平台层持有原生播放器与系统会话。通过命令和事件对接，界面只投影状态。
-- iOS 首选 C# 绑定的 `AVPlayer` / `AVQueuePlayer`、`AVAudioSession`、`MPNowPlayingInfoCenter` 和 `MPRemoteCommandCenter`。
+- Windows 首发使用 C# `Windows.Media.Playback.MediaPlayer`，由平台服务拥有媒体对象和生命周期；平台服务已接入 `SystemMediaTransportControls` 的播放/暂停/停止、元数据和时间线，系统级按键与窗口生命周期仍需独立运行验收。
+- iOS 后续使用 C# 绑定的 `AVPlayer` / `AVQueuePlayer`、`AVAudioSession`、`MPNowPlayingInfoCenter` 和 `MPRemoteCommandCenter`。
 - Android 在 M3 接入原生媒体引擎、MediaSession 与前台媒体服务，适配代码用 C#。
-- Windows 与 Mac Catalyst 在 M4 实现各自媒体会话、生命周期和窗口行为。
+- Mac Catalyst 在 M4 实现媒体会话、生命周期和窗口行为；Windows 首发切片在 M1 继续扩展为产品能力。
 - 单一播放协调器负责用户命令、系统遥控、队列切换、中断、seek 与停止，防止页面重建产生重复播放器。
 - 暂停、停止和销毁有明确语义；用户明确暂停后网络恢复不能擅自重新播放。
 - 断开车机/耳机默认暂停；再次连接遵守用户设置与系统限制。强制退出后的蓝牙自动唤起不在承诺范围内。
